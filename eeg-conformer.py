@@ -93,7 +93,7 @@ class EEGConformer(EEGModuleMixin, nn.Module):
             att_depth=6,
             att_heads=10,
             att_drop_prob=0.5,
-            final_fc_length=2440,
+            final_fc_length='auto', # could be 'auto' or int
             return_features=False, # returns the features before the last classification layer if True
             chs_info=None,
             input_window_seconds=None,
@@ -122,7 +122,7 @@ class EEGConformer(EEGModuleMixin, nn.Module):
         }
 
         del n_outputs, n_chans, chs_info, n_times, input_window_seconds, sfreq
-        del n_classes, n_channels, input_window_samples
+        # del n_classes, n_channels, input_window_samples # aliases
         if not (self.n_chans <= 64):
             warnings.warn("This model has only been tested on no more " +
                           "than 64 channels. no guarantee to work with " +
@@ -154,9 +154,9 @@ class EEGConformer(EEGModuleMixin, nn.Module):
                                        add_log_softmax=self.add_log_softmax)
 
     def forward(self, x: Tensor) -> Tensor:
-        x = torch.unsqueeze(x, dim=1)  # add one extra dimension
-        x = self.patch_embedding(x)
-        x = self.transformer(x)
+        x = torch.unsqueeze(x, dim=1)  # add one extra dimension (batch_size, 1, n_chans, n_times)
+        x = self.patch_embedding(x) # (batch_size, n_times, n_filters_time)
+        x = self.transformer(x) 
         x = self.fc(x)
         x = self.final_layer(x)
         return x
@@ -209,16 +209,18 @@ class _PatchEmbedding(nn.Module):
             drop_prob,
     ):
         super().__init__()
-
+        # input: (batch_size, 1, n_chans, n_times)
         self.shallownet = nn.Sequential(
             nn.Conv2d(1, n_filters_time,
-                      (1, filter_time_length), (1, 1)),
+                      (1, filter_time_length), (1, 1)), # converge in the time dimension
+            # (batch_size, n_filters_time, n_chans, *n_times)
             nn.Conv2d(n_filters_time, n_filters_time,
-                      (n_channels, 1), (1, 1)),
+                      (n_channels, 1), (1, 1)), # converge in the space dimension
+            # (batch_size, n_filters_time, 1, *n_times)
             nn.BatchNorm2d(num_features=n_filters_time),
             nn.ELU(),
             nn.AvgPool2d(
-                kernel_size=(1, pool_time_length),
+                kernel_size=(1, pool_time_length), # avgpool in the time dimension
                 stride=(1, stride_avg_pool)
             ),
             # pooling acts as slicing to obtain 'patch' along the
@@ -226,11 +228,13 @@ class _PatchEmbedding(nn.Module):
             nn.Dropout(p=drop_prob),
         )
 
+        # (batch_size, n_filters_time, 1, **n_times)
         self.projection = nn.Sequential(
             nn.Conv2d(
                 n_filters_time, n_filters_time, (1, 1), stride=(1, 1)
-            ),  # transpose, conv could enhance fiting ability slightly
+            ),  # transpose, conv could enhance fiting ability slightly XXX: what???
             Rearrange("b d_model 1 seq -> b seq d_model"),
+            # (batch_size, n_times, n_filters_time)
         )
 
     def forward(self, x: Tensor) -> Tensor:
