@@ -9,7 +9,7 @@ from einops.layers.torch import Rearrange
 from torch import nn, Tensor
 import warnings
 
-
+from base import EEGModuleMixin, deprecated_args
 
 class EEGConformer(EEGModuleMixin, nn.Module):
     """EEG Conformer.
@@ -100,12 +100,12 @@ class EEGConformer(EEGModuleMixin, nn.Module):
             sfreq=None,
             add_log_softmax=True,
     ):
-        # n_outputs, n_chans, n_times = deprecated_args(
-        #     self,
-        #     ('n_classes', 'n_outputs', n_classes, n_outputs),
-        #     ('n_channels', 'n_chans', n_channels, n_chans),
-        #     ('input_window_samples', 'n_times', input_window_samples, n_times)
-        # )
+        n_outputs, n_chans, n_times = deprecated_args(
+            self,
+            ('n_classes', 'n_outputs', n_classes, n_outputs),
+            ('n_channels', 'n_chans', n_channels, n_chans),
+            ('input_window_samples', 'n_times', input_window_samples, n_times)
+        )
         # XXX: this code is redundant, why not just remove extra aliases?
         super().__init__(
             n_outputs=n_outputs,

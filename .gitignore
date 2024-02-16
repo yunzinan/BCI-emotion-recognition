@@ -1,1 +1,3 @@
-./Preprocessed_EEG/*
+Preprocessed_EEG/*
+Preprocessed_EEG.zip
+__pycache__/*

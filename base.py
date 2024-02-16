@@ -87,7 +87,7 @@ class EEGModuleMixin(metaclass=NumpyDocstringInheritanceInitMeta):
                 chs_info is not None and
                 len(chs_info) != n_chans
         ):
-            raise ValueError(f'{n_chans=} different from {chs_info=} length')
+            raise ValueError(f'{n_chans} different from {chs_info} length')
         if (
                 n_times is not None and
                 input_window_seconds is not None and
@@ -95,8 +95,8 @@ class EEGModuleMixin(metaclass=NumpyDocstringInheritanceInitMeta):
                 n_times != int(input_window_seconds * sfreq)
         ):
             raise ValueError(
-                f'{n_times=} different from '
-                f'{input_window_seconds=} * {sfreq=}'
+                f'{n_times} different from '
+                f'{input_window_seconds} * {sfreq}'
             )
         self._n_outputs = n_outputs
         self._n_chans = n_chans
