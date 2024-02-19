@@ -1,7 +1,8 @@
 # BCI-emotion-recognition
-A fundamental exploration about EEG-BCI emotion recognition using the dataset from kaggle.
+A fundamental exploration about EEG-BCI emotion recognition using the SEED dataset & dataset from kaggle.
 
 # Dataset
+
 - Emotion Recognition Dataset on Kaggle: https://www.kaggle.com/datasets/birdy654/eeg-brainwave-dataset-feeling-emotions
 
 - SEED: https://bcmi.sjtu.edu.cn/home/seed/seed.html
@@ -22,9 +23,11 @@ A fundamental exploration about EEG-BCI emotion recognition using the dataset fr
 
 note: 
 
-● subject-dependent: train & test on subject1
+- Models are trained & tested on SEED dataset
 
-● subject-independent: train & test on a mixed dataset of all subjects
+● subject-dependent: train & test on subject1, 100 epochs
+
+● subject-independent: train & test on a mixed dataset of all subjects, 50 epochs
 
 
 # File Descriptions
