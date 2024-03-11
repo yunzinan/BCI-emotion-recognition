@@ -14,12 +14,14 @@ A fundamental exploration about EEG-BCI emotion recognition using the SEED datas
 - Transformer: EEG-conformer: https://github.com/eeyhsong/EEG-Conformer
 
 # Results
-
+<!-- 
 | model     | subject-dependent | subject-independent |
 | --------- | ----------------- | ------------------- |
 | GRU       | 0.9934            | 0.9737              |
 | LSTM      | 0.9657            | 0.9665              |
-| Conformer | 0.9974            | 0.9998              |
+| Conformer | 0.9974            | 0.9998              | -->
+
+Thanks for [AllGGI](https://github.com/AllGGI) to point out the [bug](https://github.com/yunzinan/BCI-emotion-recognition/issues/1) in my original impl.. I fixed the bug and re-do the experiments(only the subject-dependent ones). Sadly, the results were pretty bad. Therefore, I suppose this work isn't a successful practice, and hidden bugs may remain in the codings.
 
 note: 
 
